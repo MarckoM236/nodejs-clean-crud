@@ -1,0 +1,40 @@
+import pool from '../../system/connectionDB.js';
+
+class taskRepository{
+    constructor(){}
+
+    async getTasks(){
+        const query = 'select * from tasks';
+        const [rows] = await pool.execute(query);
+        return rows;
+    }
+
+    async createTask(data){
+        const [result] = await pool.execute(
+        'INSERT INTO tasks (name, description, created_date, updated_date status) VALUES (?, ?, ?, ?)',
+        [data['name'], data['description'], data['created_date'],data['created_date'], data['status']]
+        );
+
+        return result;
+    }
+
+    async updateTask(id, data){
+        const [result] = await pool.execute(
+        'update tasks set name=?, description=?, updated_date=?, status=? where id=?',
+        [data['name'], data['description'], data['updated_date'], data['status'], id]
+        );
+
+        return result;
+    }
+
+    async deleteTask(id){
+        const [result] = await pool.execute(
+        'delete from tasks where id=?',
+        [id]
+        );
+
+        return result;
+    }
+}
+
+export default taskRepository;

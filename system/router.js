@@ -1,0 +1,71 @@
+import routes from "../app/routes.js";
+import { response } from "../app/helpers/response.js";
+
+const regexes = getRegex(routes);
+
+async function router(req, res) {
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    const pathname = url.pathname;
+    const queryParams = Object.fromEntries(url.searchParams);
+
+    const routeInfo = matchRoute(pathname, regexes);
+
+    if (routeInfo) {
+        const route = routes[routeInfo.route];
+        const params = routeInfo?.params || {};
+
+        const [method, controllerName, actionName] = route;
+
+        if (method === req.method) {
+           try {
+            const controller = await import(`../app/controllers/${controllerName}.js`);
+            const ControllerClass = controller.default
+            const controllerInstance = new ControllerClass();
+
+            await controllerInstance[actionName](req, res, params, queryParams);
+
+           } catch (error) {
+            console.log(error);
+            response(res,500,'text/plain', 'Internal Server Error\n');
+           }
+        }
+        else{
+            response(res,405,'text/plain', 'Method not allowed\n');
+        }
+    } else {
+        response(res,404,'text/plain', '404 Not Found\n');
+    }
+}
+
+function getRegex(routes){
+    let regexes = [];
+    for (let route in routes) {
+
+        // Convert {param} → regex
+        const pattern = route.replace(/{[^}]+}/g, '([^/]+)');
+        
+        // create regex
+        const regex = new RegExp(`^${pattern}$`);
+
+        regexes.push({regex, route});
+    }
+    return regexes;
+}
+
+function matchRoute(url, regexes) {
+    for (let regexe_item in regexes) {
+
+        const match = url.match(regexes[regexe_item].regex);
+
+        if (match) {
+            return {
+                route: regexes[regexe_item].route,
+                params: match.slice(1)
+            };
+        }
+    }
+
+    return null;
+}
+
+export default router;
