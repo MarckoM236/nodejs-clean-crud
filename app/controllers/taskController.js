@@ -23,13 +23,14 @@ class taskController {
 
             //validate
             if(validateCreation(data)){
-                const tasks = await this.taskService.createTask(data);
-                response(res,201,'application/json', JSON.stringify(tasks));
+                const task = await this.taskService.createTask(data);
+                response(res,201,'application/json', JSON.stringify({'success':true,'message':'Task created successfully','data':task}));
             }
             else{
                 response(res,400,'application/json', JSON.stringify({'success':false,'error':'there are obligatory fields empties'}));
             }
         } catch (error) {
+            console.log(error)
             response(res,500,'application/json', JSON.stringify({'success':false,'error':'server error'}));
         }
 
@@ -43,8 +44,8 @@ class taskController {
 
             //validate
             if(validateUpdate(data)){
-                const tasks = await this.taskService.updateTask(id,data);
-                response(res,200,'application/json', JSON.stringify(tasks));
+                const task = await this.taskService.updateTask(id,data);
+                response(res,200,'application/json', JSON.stringify({'success':true,'message':'Task updated successfully','data':task}));
             }
             else{
                 response(res,400,'application/json', JSON.stringify({'success':false,'error':'there are obligatory fields empties'}));
@@ -61,7 +62,7 @@ class taskController {
 
         try {
             const tasks = await this.taskService.deleteTask(id);
-            response(res,200,'application/json', JSON.stringify(tasks));
+            response(res,200,'application/json', JSON.stringify({'success':true,'message':'Task deleted successfully','data':task}));
             
         } catch (error) {
             console.log(error)

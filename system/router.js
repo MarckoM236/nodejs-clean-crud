@@ -26,14 +26,14 @@ async function router(req, res) {
 
            } catch (error) {
             console.log(error);
-            response(res,500,'text/plain', 'Internal Server Error\n');
+            response(res,500,'application/json', JSON.stringify({'success':false,'error':'Internal server error'}));
            }
         }
         else{
-            response(res,405,'text/plain', 'Method not allowed\n');
+            response(res,405,'application/json', JSON.stringify({'success':false,'error':'Method not allowed'}));
         }
     } else {
-        response(res,404,'text/plain', '404 Not Found\n');
+        response(res,404,'application/json', JSON.stringify({'success':false,'error':'Not found'}));
     }
 }
 

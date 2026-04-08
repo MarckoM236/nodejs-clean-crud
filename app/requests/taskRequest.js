@@ -28,8 +28,8 @@ function validateUpdate(data) {
   ruleSet['name']='nullable';
   ruleSet['description'] = 'nullable';
   ruleSet['created_date'] = 'nullable';
-  ruleSet['updated_date'] = 'required';
-  ruleSet['status'] = 'required';
+  ruleSet['updated_date'] = 'nullable';
+  ruleSet['status'] = 'nullable';
 
   for (const key of Object.keys(ruleSet)) {
     if ((!(key in data) || data[key] == '') && ruleSet[key] === 'required') {

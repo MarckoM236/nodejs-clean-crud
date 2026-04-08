@@ -21,7 +21,11 @@ class taskService {
             throw new Error('Task completed must have date');
         }
 
-        return await this.taskRepository.updateTask(id, data);
+        const keys = Object.keys(data);
+        const setKeys = keys.map(key => `${key} = ?`).join(', ');
+        const values = Object.values(data);
+
+        return await this.taskRepository.updateTask(id, setKeys, values);
     }
 
     async deleteTask(id){

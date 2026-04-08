@@ -1,5 +1,6 @@
 import http from 'http';
 import router from './system/router.js';
+import {connectionServer} from './app/config/appConfig.js'
 
 const server = http.createServer((req, res) => {
   
@@ -7,6 +8,6 @@ const server = http.createServer((req, res) => {
   
 });
 
-server.listen(3010, 'localhost', () => {
-  console.log('Server running at http://localhost:3010/');
+server.listen(connectionServer.port, connectionServer.host, () => {
+  console.log(`Server running at http://${connectionServer.host}:${connectionServer.port}/`);
 });
