@@ -5,4 +5,8 @@ const connectionServer = {
     "port":process.env.PORT_SERVER
 }
 
-export {connectionServer};
+const secretApi = {
+    'api_key':process.env.SECRET_API_KEY
+}
+
+export {connectionServer, secretApi};

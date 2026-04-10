@@ -13,6 +13,7 @@ class taskController {
             const tasks = await this.taskService.getTasks();
             response(res,200,'application/json', JSON.stringify(tasks));
         } catch (error) {
+            console.log(error)
             response(res,500,'application/json', JSON.stringify({'success':false,'error':'server error'}));
         }
     }

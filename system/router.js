@@ -1,5 +1,6 @@
 import routes from "../app/routes.js";
 import { response } from "../app/helpers/response.js";
+import middlewares from "../app/middlewares/kernel.js";
 
 const regexes = getRegex(routes);
 
@@ -14,9 +15,20 @@ async function router(req, res) {
         const route = routes[routeInfo.route];
         const params = routeInfo?.params || {};
 
-        const [method, controllerName, actionName] = route;
+        const [method, controllerName, actionName, middlewaresRoute] = route;
 
         if (method === req.method) {
+
+           //validate middlewares 
+           if(middlewaresRoute && Array.isArray(middlewaresRoute)){
+                for(const name of middlewaresRoute){
+                    if(name in middlewares){
+                        const passed = middlewares[name](req, res);
+                        if (!passed) return; 
+                    }
+                }
+           }
+
            try {
             const controller = await import(`../app/controllers/${controllerName}.js`);
             const ControllerClass = controller.default
